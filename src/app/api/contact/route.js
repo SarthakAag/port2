@@ -11,23 +11,26 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Nodemailer transporter (explicit Gmail SMTP config)
+    // ✅ TEMPORARY: log env variables (mask password)
+    console.log("🔎 SMTP_USER:", process.env.SMTP_USER);
+    console.log(
+      "🔎 SMTP_PASS length:",
+      process.env.SMTP_PASS ? process.env.SMTP_PASS.length : "undefined"
+    );
+
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true, // true for 465, false for 587
+      service: "gmail",
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
     });
 
-    // Email content
     const mailOptions = {
       from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
       replyTo: email,
       to: process.env.SMTP_USER,
-      subject: subject && subject.trim() ? subject : `📩 New Message from ${name}`,
+      subject: subject || `📩 New Message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
       html: `
         <h2>📩 New Contact Form Submission</h2>
@@ -39,21 +42,16 @@ export async function POST(req) {
       `,
     };
 
-    // ✅ Send email
     await transporter.sendMail(mailOptions);
 
     return new Response(
-      JSON.stringify({ success: true, message: "✅ Email sent successfully!" }),
+      JSON.stringify({ success: true, message: "Email sent successfully!" }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("❌ Email sending error:", error);
-
     return new Response(
-      JSON.stringify({
-        error: "Failed to send message",
-        details: error.message, // ✅ log reason in API response (remove later if you want privacy)
-      }),
+      JSON.stringify({ error: "Failed to send message" }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
