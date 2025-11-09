@@ -1,0 +1,141 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { Award, FolderKanban, Download } from "lucide-react";
+
+const projects = [
+  {
+    title: "Portfolio Website",
+    description: "A modern responsive portfolio with 3D elements and animations.",
+    link: "https://github.com/SarthakAag/port2",
+  },
+  {
+    title: "Data Analytics Dashboard",
+    description: "Dashboard for visualizing insights from data with interactive charts.",
+    link: "#",
+  },
+  {
+    title: "Stock Price Prediction",
+    description: "Forecasting future stock prices using historical data, market trends, and predictive modeling.",
+    link: "https://stockfinal-sarthak.streamlit.app/",
+  },
+  {
+    title: "AI powered Chatbot",
+    description: "An AI-powered chatbot that delivers instant, intelligent, and personalized conversations.",
+    link: "#",
+  },
+];
+
+const certificates = [
+  {
+    name: "AI/ML",
+    issuer: "Nasscom",
+    year: "2025",
+    link: "/certificates/nasscom.pdf",
+  },
+  {
+    name: "Demystfying Network",
+    issuer: "NPTEL",
+    year: "2025",
+    link: "/certificates/demystfying.pdf",
+  },
+  {
+    name: "Essential for Personal Finance",
+    issuer: "Nergy Vidya",
+    year: "2025",
+    link: "/certificates/nergy.pdf",
+  },
+  {
+    name: "Introduction to Data Analyst",
+    issuer: "CourseEra",
+    year: "2024",
+    link: "/certificates/dataanalyst.pdf",
+  },
+  {
+    name: "Data Science",
+    issuer: "Coursera",
+    year: "2024",
+    link: "/certificates/datascience.pdf",
+  },
+];
+
+export default function ProjectsCertificatesSection() {
+  return (
+    <section className="relative min-h-screen px-6 sm:px-12 py-16 text-white">
+      <div className="relative z-10 max-w-5xl mx-auto flex flex-col gap-16">
+        
+        {/* Projects Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h2 className="flex items-center gap-3 text-3xl sm:text-4xl font-bold mb-6 text-indigo-400">
+            <FolderKanban className="text-cyan-400" /> Projects
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {projects.map((project, idx) => (
+              <motion.a
+                key={idx}
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-gradient-to-r from-gray-900/80 to-gray-800/80 p-6 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm block hover:border-indigo-500 transition-all"
+              >
+                <h3 className="text-xl font-semibold text-indigo-300">{project.title}</h3>
+                <p className="text-gray-400 mt-2">{project.description}</p>
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Certificates Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h2 className="flex items-center gap-3 text-3xl sm:text-4xl font-bold mb-6 text-cyan-400">
+            <Award className="text-blue-400" /> Certificates
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {certificates.map((cert, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                className="bg-gradient-to-r from-gray-900/80 to-gray-800/80 p-6 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm flex flex-col justify-between hover:border-cyan-500 transition-all"
+              >
+                <div>
+                  <h3 className="text-xl font-semibold text-cyan-300">{cert.name}</h3>
+                  <p className="text-gray-400 mt-2">
+                    {cert.issuer} • {cert.year}
+                  </p>
+                </div>
+                <a
+                  href={cert.link}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white px-4 py-2 rounded-lg shadow-md transition w-fit"
+                >
+                  <Download size={18} /> Download
+                </a>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

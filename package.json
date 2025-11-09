@@ -15,6 +15,7 @@
     "deploy": "gh-pages -d out --dotfiles"
   },
   "dependencies": {
+    "@google/genai": "^1.29.0",
     "@next/font": "^14.2.15",
     "@react-three/drei": "^10.7.4",
     "@react-three/fiber": "^9.3.0",
@@ -22,7 +23,7 @@
     "geist": "^1.4.2",
     "lucide-react": "^0.542.0",
     "next": "15.5.2",
-    "nodemailer": "^7.0.6",
+    "nodemailer": "^7.0.10",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
@@ -30,6 +31,7 @@
     "@biomejs/biome": "2.2.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
