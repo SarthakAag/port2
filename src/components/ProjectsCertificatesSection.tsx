@@ -22,7 +22,7 @@ const projects = [
   {
     title: "AI powered Chatbot",
     description: "An AI-powered chatbot that delivers instant, intelligent, and personalized conversations.",
-    link: "#",
+    link: "https://github.com/SarthakAag/chatbot",
   },
 ];
 
