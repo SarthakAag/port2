@@ -16,6 +16,7 @@ import {
   Mail,
   Menu,
   X,
+  Briefcase,
 } from "lucide-react";
 
 export default function Navbar() {
@@ -25,7 +26,6 @@ export default function Navbar() {
 
   const { scrollY } = useScroll();
 
-  // Navbar hide/show on scroll
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() || 0;
 
@@ -56,6 +56,11 @@ export default function Navbar() {
       href: "#contact",
       label: "Contact",
       icon: <Mail size={20} />,
+    },
+    {
+      href: "/freelance",
+      label: "Freelance",
+      icon: <Briefcase size={20} />,
     },
   ];
 
