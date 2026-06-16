@@ -235,23 +235,29 @@ function BookingModal({ onClose }: { onClose: () => void }) {
       weekday: "long", year: "numeric", month: "long", day: "numeric",
     });
 
-    const subject = encodeURIComponent(
-      `Meeting Request — ${form.name} — ${dateStr} at ${selectedTime}`
-    );
-    const body = encodeURIComponent(
-      `Hi Sarthak,\n\nI'd like to book a meeting with you.\n\n` +
-      `Name: ${form.name}\nEmail: ${form.email}\nDate: ${dateStr}\nTime: ${selectedTime}\n\n` +
-      `Project details:\n${form.project || "To be discussed."}\n\nLooking forward to connecting!`
-    );
+    try {
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          project: form.project,
+          date: dateStr,
+          time: selectedTime,
+        }),
+      });
 
-    window.open(
-      `https://mail.google.com/mail/?view=cm&to=sarthakag2004@gmail.com&su=${subject}&body=${body}`,
-      "_blank"
-    );
+      const data = await res.json();
+      if (!data.ok) throw new Error("Send failed");
 
-    await new Promise(r => setTimeout(r, 800));
-    setSending(false);
-    setStep("done");
+      setStep("done");
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong — please email sarthakag2004@gmail.com directly.");
+    } finally {
+      setSending(false);
+    }
   };
 
   const dateLabel = selectedDate?.toLocaleDateString("en-US", {
@@ -259,12 +265,10 @@ function BookingModal({ onClose }: { onClose: () => void }) {
   });
 
   return (
-    // Backdrop — full screen, scrollable on mobile
     <div
       className="fixed inset-0 z-50 overflow-y-auto"
       style={{ background: "rgba(0,0,0,0.80)", backdropFilter: "blur(8px)" }}
     >
-      {/* Centering wrapper — min-h-full so short content stays centred, padding for safe area */}
       <div className="flex min-h-full items-center justify-center p-4 py-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -293,7 +297,6 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                 transition={{ duration: 0.25 }}
                 className="p-5 sm:p-7"
               >
-                {/* Header */}
                 <div className="flex items-center gap-3 mb-5 pr-8">
                   <div className="w-8 h-8 shrink-0 rounded-xl bg-cyan-500/10 flex items-center justify-center">
                     <Calendar size={15} className="text-cyan-400" />
@@ -304,7 +307,6 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                   </div>
                 </div>
 
-                {/* Month nav */}
                 <div className="flex items-center justify-between mb-3">
                   <button
                     onClick={prevMonth}
@@ -323,7 +325,6 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                   </button>
                 </div>
 
-                {/* Day labels */}
                 <div className="grid grid-cols-7 mb-1">
                   {DAY_NAMES.map(d => (
                     <div key={d} className="text-center text-gray-600 text-[10px] font-mono py-1">
@@ -332,7 +333,6 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                   ))}
                 </div>
 
-                {/* Calendar grid */}
                 <div className="grid grid-cols-7 gap-0.5 mb-5">
                   {cells.map((day, idx) => {
                     if (!day) return <div key={idx} />;
@@ -366,7 +366,6 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                   })}
                 </div>
 
-                {/* Time slots */}
                 <AnimatePresence>
                   {selectedDate && (
                     <motion.div
@@ -382,7 +381,6 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                           {dateLabel} — pick a time (IST)
                         </span>
                       </div>
-                      {/* 3-col on all sizes — fits well on mobile */}
                       <div className="grid grid-cols-3 gap-1.5 mb-5">
                         {TIME_SLOTS.map(t => (
                           <button
@@ -437,7 +435,6 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                   <ArrowLeft size={13} /> back
                 </button>
 
-                {/* Summary pill */}
                 <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-cyan-500/8 border border-cyan-400/15 mb-5 w-fit max-w-full overflow-hidden">
                   <Calendar size={12} className="text-cyan-400 shrink-0" />
                   <span className="text-cyan-300 text-[11px] font-mono truncate">
@@ -499,7 +496,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                   {sending ? (
                     <span className="flex items-center gap-2">
                       <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Opening email...
+                      Sending...
                     </span>
                   ) : (
                     <>Send booking request <Send size={13} /></>
@@ -507,7 +504,7 @@ function BookingModal({ onClose }: { onClose: () => void }) {
                 </motion.button>
 
                 <p className="text-gray-600 text-[10px] text-center mt-2.5 font-mono">
-                  Opens Gmail draft to sarthakag2004@gmail.com
+                  Your request will be sent directly to Sarthak.
                 </p>
               </motion.div>
             )}
@@ -569,7 +566,6 @@ export default function FreelancePage() {
 
       <main className="relative min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
 
-        {/* Ambient glows — scaled down on mobile */}
         <div className="pointer-events-none fixed inset-0 z-0">
           <div className="absolute top-[-10%] left-[-5%] w-[280px] h-[280px] sm:w-[480px] sm:h-[480px] bg-cyan-500/10 rounded-full blur-[80px] sm:blur-[120px]" />
           <div className="absolute bottom-[10%] right-[-5%] w-[240px] h-[240px] sm:w-[400px] sm:h-[400px] bg-blue-600/10 rounded-full blur-[70px] sm:blur-[120px]" />
@@ -677,7 +673,6 @@ export default function FreelancePage() {
               </h2>
             </motion.div>
 
-            {/* 1 col → 2 col → 3 col */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               {services.map((s, i) => (
                 <motion.div
@@ -732,7 +727,6 @@ export default function FreelancePage() {
               </h2>
             </motion.div>
 
-            {/* Stack on mobile, 3-col on sm+ */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
               {process.map((p, i) => (
                 <motion.div
@@ -755,7 +749,6 @@ export default function FreelancePage() {
                     <h3 className="font-bold text-white text-sm sm:text-base mb-1">{p.step}</h3>
                     <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">{p.desc}</p>
                   </div>
-                  {/* Connector line — desktop only */}
                   {i < process.length - 1 && (
                     <div className="hidden sm:block absolute top-1/2 -right-3 w-6 h-px bg-cyan-400/20" />
                   )}
@@ -790,7 +783,6 @@ export default function FreelancePage() {
                   Whether it's an AI agent, a web app, or an automation pipeline —
                   book a call or drop a message and let's figure it out.
                 </p>
-                {/* Stack on mobile, row on sm+ */}
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
                   <motion.button
                     onClick={() => setBookingOpen(true)}
